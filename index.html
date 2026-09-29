@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sudoku Master - Juego Web Interactivo</title>
+  <title>Sudoku Master - Modo Solo & Multijugador en Grupo</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="theme-galaxy">
 
   <div class="game-container">
-    <!-- BARRA SUPERIOR: PERFIL, ESTRELLAS, SONIDO Y TEMA -->
+    <!-- BARRA SUPERIOR: PERFIL, MODO, SONIDO, TEMA Y SALIR -->
     <header class="top-bar">
       <div class="user-profile-badge" id="btn-profile" title="Ver perfil y estadísticas">
         <span class="avatar-icon" id="user-avatar">🦊</span>
@@ -20,6 +20,11 @@
       </div>
 
       <div class="header-controls">
+        <button id="btn-switch-mode" class="mode-toggle-btn" title="Cambiar modo de juego (Solo / Multijugador)">
+          <span id="mode-icon">🎮</span>
+          <span id="mode-text">Modo Solo</span>
+        </button>
+
         <select id="theme-select" class="theme-dropdown" title="Cambiar tema de fondo">
           <option value="theme-galaxy">🌌 Galaxia Neón</option>
           <option value="theme-wood">🪵 Madera Clásica</option>
@@ -31,8 +36,24 @@
         <button id="btn-sound" class="icon-btn" title="Silenciar / Activar sonido">
           <span>🔊</span>
         </button>
+
+        <button id="btn-logout" class="icon-btn btn-danger" title="Cerrar sesión o cambiar de cuenta">
+          <span>🚪</span>
+        </button>
       </div>
     </header>
+
+    <!-- BARRA HUD MULTIJUGADOR EN VIVO (Visible solo durante partidas en grupo) -->
+    <div id="multiplayer-hud" class="multiplayer-hud hidden">
+      <div class="mp-hud-header">
+        <span class="mp-live-badge">🔴 EN VIVO</span>
+        <span id="mp-round-indicator" class="mp-round-text">Ronda 1 de 1</span>
+        <span id="mp-room-badge" class="mp-room-tag">Sala: ---</span>
+      </div>
+      <div id="opponents-container" class="opponents-track">
+        <!-- Tarjetas de progreso de los rivales generadas dinámicamente -->
+      </div>
+    </div>
 
     <!-- BARRA DE ESTADO DE LA PARTIDA: DIFICULTAD, TIEMPO, FALLAS -->
     <div class="game-status-bar">
@@ -113,19 +134,52 @@
     </section>
   </div>
 
-  <!-- TOAST DE NOTIFICACIONES (BONIFICACIONES DE VELOCIDAD, ETC.) -->
+  <!-- TOAST DE NOTIFICACIONES (AVISOS, BONOS Y ALERTAS) -->
   <div id="toast-notification" class="toast">
     <h4 id="toast-title">Aviso</h4>
     <p id="toast-desc">Mensaje del juego</p>
   </div>
 
-  <!-- MODAL: REGISTRO DE USUARIO -->
-  <div id="modal-register" class="modal-overlay hidden">
-    <div class="modal-card">
-      <h2>✨ Registro de Jugador</h2>
-      <p>Elige tu avatar y un nombre para guardar tus estrellas, récords y estadísticas.</p>
-      
-      <form id="form-register">
+  <!-- ==========================================================================
+       MODAL 1: AUTENTICACIÓN (LOGIN & REGISTRO CON PESTAÑAS)
+       ========================================================================== -->
+  <div id="modal-auth" class="modal-overlay hidden">
+    <div class="modal-card auth-card">
+      <div class="auth-tabs">
+        <button type="button" id="tab-login" class="auth-tab-btn active">Iniciar Sesión</button>
+        <button type="button" id="tab-register" class="auth-tab-btn">Crear Cuenta</button>
+      </div>
+
+      <!-- PESTAÑA A: INICIAR SESIÓN -->
+      <form id="form-login" class="auth-form-panel">
+        <p class="auth-desc">Accede con tu cuenta para jugar solo o unirte a partidas en grupo.</p>
+
+        <!-- Selector rápido de cuentas guardadas en esta máquina -->
+        <div id="quick-accounts-section" class="quick-accounts-container hidden">
+          <label class="form-label">Cuentas en este equipo:</label>
+          <div id="saved-accounts-list" class="quick-accounts-list"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="login-username" class="form-label">Nombre de Usuario:</label>
+          <input type="text" id="login-username" class="input-text" placeholder="Ej: Monica" required />
+        </div>
+
+        <div class="form-group">
+          <label for="login-pin" class="form-label">PIN o Clave de Acceso:</label>
+          <input type="password" id="login-pin" class="input-text" placeholder="Tu PIN secreto" required />
+        </div>
+
+        <div id="login-error-msg" class="auth-error-alert hidden"></div>
+
+        <button type="submit" class="btn-primary">Entrar a Jugar</button>
+      </form>
+
+      <!-- PESTAÑA B: CREAR CUENTA NUEVA -->
+      <form id="form-register" class="auth-form-panel hidden">
+        <p class="auth-desc">Crea tu cuenta única, elige tu avatar y recibe 4 ⭐ de bienvenida.</p>
+
+        <label class="form-label">Elige tu Avatar:</label>
         <div class="avatar-selection-grid">
           <button type="button" class="avatar-choice selected" data-avatar="🦊">🦊</button>
           <button type="button" class="avatar-choice" data-avatar="🦁">🦁</button>
@@ -139,25 +193,192 @@
           <button type="button" class="avatar-choice" data-avatar="🐱">🐱</button>
         </div>
 
-        <input
-          type="text"
-          id="input-player-name"
-          class="input-text"
-          placeholder="Tu Nombre o Apodo"
-          maxlength="15"
-          required
-        />
+        <div class="form-group">
+          <label for="register-username" class="form-label">Nombre o Apodo:</label>
+          <input type="text" id="register-username" class="input-text" placeholder="Tu Nombre de Jugador" maxlength="15" required />
+        </div>
 
-        <button type="submit" class="btn-primary">¡Comenzar a Jugar!</button>
+        <div class="form-group">
+          <label for="register-pin" class="form-label">Crear PIN o Clave:</label>
+          <input type="password" id="register-pin" class="input-text" placeholder="Mínimo 3 dígitos" required />
+        </div>
+
+        <div id="register-error-msg" class="auth-error-alert hidden"></div>
+
+        <button type="submit" class="btn-primary">Crear Cuenta y Comenzar</button>
       </form>
     </div>
   </div>
 
-  <!-- MODAL: GAME OVER / REVIVIR CON ESTRELLAS -->
+  <!-- ==========================================================================
+       MODAL 2: SELECTOR DE MODO (SOLO vs MULTIJUGADOR EN GRUPO)
+       ========================================================================== -->
+  <div id="modal-mode-select" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h2>🎲 ¿Cómo quieres jugar?</h2>
+      <p>Selecciona si deseas entrenar en solitario o armar una carrera con amigos.</p>
+
+      <div class="mode-cards-grid">
+        <div class="mode-card" id="card-mode-solo">
+          <div class="mode-icon-large">🎮</div>
+          <h3>Modo Solitario</h3>
+          <p>Supera niveles progresivos, rompe tus propios récords y acumula estrellas.</p>
+          <button class="btn-primary" id="btn-select-solo">Jugar Solo</button>
+        </div>
+
+        <div class="mode-card" id="card-mode-group">
+          <div class="mode-icon-large">👥</div>
+          <h3>Modo en Grupo</h3>
+          <p>Conéctate con amigos mediante un código. ¡Todos juegan el mismo tablero y quien termine primero gana!</p>
+          <button class="btn-primary btn-revive-glow" id="btn-select-group">Jugar en Grupo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 3: LOBBY MULTIJUGADOR (CREAR SALA / UNIRSE CON CÓDIGO)
+       ========================================================================== -->
+  <div id="modal-multiplayer-lobby" class="modal-overlay hidden">
+    <div class="modal-card mp-lobby-card">
+      
+      <!-- VISTA 1: MENÚ PRINCIPAL MULTIJUGADOR -->
+      <div id="mp-view-menu" class="mp-subview">
+        <h2>👥 Juego en Grupo</h2>
+        <p>Crea una sala para compartir el código o ingresa el código de tu amigo.</p>
+
+        <div class="mp-action-buttons">
+          <button id="btn-mp-open-create" class="btn-primary btn-revive-glow">
+            ➕ Crear Sala Nueva
+          </button>
+          <button id="btn-mp-open-join" class="btn-secondary">
+            🔑 Unirse con un Código
+          </button>
+          <button id="btn-mp-cancel-menu" class="btn-secondary">
+            Volver a Modo Solo
+          </button>
+        </div>
+      </div>
+
+      <!-- VISTA 2: FORMULARIO CREAR SALA -->
+      <div id="mp-view-create" class="mp-subview hidden">
+        <h2>⚙️ Configurar Sala</h2>
+        <p>Elige el nivel y cuántas partidas consecutivas competirán.</p>
+
+        <div class="form-group">
+          <label class="form-label">Nivel de Dificultad para Todos:</label>
+          <select id="mp-create-difficulty" class="input-select">
+            <option value="1">Nivel 1: Principiante</option>
+            <option value="2" selected>Nivel 2: Fácil</option>
+            <option value="3">Nivel 3: Medio</option>
+            <option value="4">Nivel 4: Difícil</option>
+            <option value="5">Nivel 5: Experto</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Partidas Consecutivas:</label>
+          <select id="mp-create-rounds" class="input-select">
+            <option value="1" selected>1 Partida Rápida</option>
+            <option value="2">2 Partidas Consecutivas (Gran Final)</option>
+          </select>
+        </div>
+
+        <div class="btn-group-row">
+          <button id="btn-mp-back-to-menu" class="btn-secondary">Atrás</button>
+          <button id="btn-mp-submit-create" class="btn-primary">Generar Sala y Código</button>
+        </div>
+      </div>
+
+      <!-- VISTA 3: FORMULARIO UNIRSE A SALA -->
+      <div id="mp-view-join" class="mp-subview hidden">
+        <h2>🔑 Unirse a Sala</h2>
+        <p>Escribe el código que te compartió el creador del grupo:</p>
+
+        <input
+          type="text"
+          id="input-mp-room-code"
+          class="input-text input-code"
+          placeholder="Ej: SDK-842"
+          maxlength="8"
+          autocomplete="off"
+        />
+
+        <div id="join-error-msg" class="auth-error-alert hidden"></div>
+
+        <div class="btn-group-row">
+          <button id="btn-mp-back-from-join" class="btn-secondary">Atrás</button>
+          <button id="btn-mp-submit-join" class="btn-primary">Conectarse a la Sala</button>
+        </div>
+      </div>
+
+      <!-- VISTA 4: SALA DE ESPERA (LOBBY EN VIVO) -->
+      <div id="mp-view-room" class="mp-subview hidden">
+        <div class="room-code-banner">
+          <span class="room-code-label">CÓDIGO DE SALA:</span>
+          <span id="display-room-code" class="room-code-text">SDK-000</span>
+          <button id="btn-copy-room-code" class="icon-btn-small" title="Copiar código al portapapeles">📋 Copiar</button>
+        </div>
+
+        <p class="room-rules-summary" id="display-room-rules">
+          Dificultad: Fácil | Rondas: 1
+        </p>
+
+        <h4 class="lobby-players-title">Jugadores en la sala (<span id="mp-player-count">1</span>):</h4>
+        <div id="lobby-players-grid" class="lobby-players-grid">
+          <!-- Jugadores renderizados aquí -->
+        </div>
+
+        <div id="host-controls-panel" class="host-controls hidden">
+          <button id="btn-mp-start-game" class="btn-primary btn-revive-glow">
+            🚀 ¡Iniciar Carrera!
+          </button>
+          <p class="host-hint">Todos jugarán el mismo tablero. El primero en terminar gana.</p>
+        </div>
+
+        <div id="guest-waiting-panel" class="guest-waiting hidden">
+          <div class="loader-pulse"></div>
+          <p>Esperando que el anfitrión inicie la partida...</p>
+        </div>
+
+        <button id="btn-mp-leave-room" class="btn-secondary btn-small" style="margin-top:14px;">
+          Salir de la Sala
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 4: PODIO Y RESULTADOS MULTIJUGADOR
+       ========================================================================== -->
+  <div id="modal-multiplayer-podium" class="modal-overlay hidden">
+    <div class="modal-card podium-card">
+      <h2 id="podium-title">🏆 ¡Carrera Concluida!</h2>
+      <p id="podium-subtitle">Clasificación final de la partida:</p>
+
+      <div id="podium-ranking-list" class="podium-ranking-list">
+        <!-- Puestos 1º, 2º, 3º... generados aquí -->
+      </div>
+
+      <div class="podium-actions">
+        <button id="btn-mp-next-round" class="btn-primary btn-revive-glow hidden">
+          Continuar a la Ronda 2 ➔
+        </button>
+        <button id="btn-mp-podium-close" class="btn-secondary">
+          Volver al Menú
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: GAME OVER / REVIVIR CON ESTRELLAS (Solo individual)
+       ========================================================================== -->
   <div id="modal-gameover" class="modal-overlay hidden">
     <div class="modal-card">
       <h2>💀 ¡4 Fallas Cometidas!</h2>
-      <p>Has alcanzado el límite de errores permitidos. ¿Quieres continuar tu partida sin perder tu progreso o prefieres reiniciar?</p>
+      <p id="gameover-desc">Has alcanzado el límite de errores permitidos. ¿Quieres continuar tu partida sin perder tu progreso o prefieres reiniciar?</p>
       
       <button id="btn-revive" class="btn-primary btn-revive-glow">
         ✨ Continuar con Estrellas (-2 ⭐)
@@ -170,7 +391,9 @@
     </div>
   </div>
 
-  <!-- MODAL: VICTORIA -->
+  <!-- ==========================================================================
+       MODAL: VICTORIA EN MODO SOLO
+       ========================================================================== -->
   <div id="modal-victory" class="modal-overlay hidden">
     <div class="modal-card">
       <h2>🏆 ¡Partida Completada!</h2>
@@ -197,7 +420,9 @@
     </div>
   </div>
 
-  <!-- MODAL: PERFIL Y ESTADÍSTICAS -->
+  <!-- ==========================================================================
+       MODAL: PERFIL Y ESTADÍSTICAS
+       ========================================================================== -->
   <div id="modal-stats" class="modal-overlay hidden">
     <div class="modal-card">
       <h2>📊 Perfil del Jugador</h2>
@@ -208,10 +433,12 @@
     </div>
   </div>
 
-  <!-- SCRIPTS -->
+  <!-- LIBRERÍAS Y SCRIPTS DEL JUEGO -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/generator.js"></script>
   <script src="js/storage.js"></script>
+  <script src="js/multiplayer.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

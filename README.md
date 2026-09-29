@@ -1,64 +1,55 @@
-# 🧩 Sudoku Master - Videojuego Web
+# 🧩 Sudoku Master - Modo Solo & Multijugador en Grupo
 
-Un juego de Sudoku interactivo, moderno y completo desarrollado con tecnologías web estándar (HTML5, CSS3, JavaScript ES6) y Web Audio API.
-
----
-
-## 🌟 Características Principales
-
-1. **Registro de Jugador**:
-   - Registro con selección de avatar personalizado y nombre antes de comenzar a jugar.
-   - Guarda tu saldo de estrellas (⭐), partidas jugadas, victorias y mejores tiempos por dificultad en `localStorage`.
-
-2. **Dificultad Progresiva (5 Niveles)**:
-   - **Nivel 1: Principiante**: ~48 números dados (Gana 1 ⭐).
-   - **Nivel 2: Fácil**: ~40 números dados (Gana 2 ⭐).
-   - **Nivel 3: Medio**: ~34 números dados (Gana 3 ⭐).
-   - **Nivel 4: Difícil**: ~28 números dados (Gana 4 ⭐).
-   - **Nivel 5: Experto**: ~24 números dados (Gana 5 ⭐).
-   - *Bonificación extra*: ¡Gana +1 estrella adicional si terminas la partida con 0 fallas!
-
-3. **Límite de 4 Fallas y Sistema de Continuación**:
-   - Contador visual de fallas con corazones interactivos (❤️/❌).
-   - Al llegar a 4 fallas, aparece el menú de derrota.
-   - **Revivir con Estrellas**: Si tienes 2 o más estrellas ganadas, puedes canjearlas para restaurar tus fallas a 1/4 y continuar jugando exactamente donde te quedaste sin perder tu progreso.
-
-4. **Campos y Fondos Diferentes (Temas Visuales)**:
-   - 🌌 **Galaxia Neón**: Fondo espacial profundo con celdas y bordes brillantes cian y magenta.
-   - 🪵 **Madera Clásica**: Estilo tablero artesanal de madera cálida y estética zen.
-   - 🌿 **Bosque Esmeralda**: Tonos verdes naturales y relajantes.
-   - ☀️ **Papel & Tinta**: Estilo clásico de periódico minimalista de alta legibilidad.
-   - 🌆 **Cyberpunk**: Estilo futurista de alto contraste con acentos en amarillo y fucsia eléctrico.
-
-5. **Bonificación de Ayuda por Velocidad (< 1 minuto)**:
-   - Si logras colocar todos los 9 ejemplares de cualquier dígito en el tablero en menos de 60 segundos desde el inicio, recibirás una alerta especial y ganarás **+1 Ayuda/Pista gratuita**.
-
-6. **Efectos Luminosos Dinámicos (Glow Waves)**:
-   - **Fila completada**: Ola de resplandor luminoso horizontal.
-   - **Columna completada**: Haz de luz brillante vertical.
-   - **Recuadro 3x3 completado**: Pulso perimetral y destello en todo el cuadrante.
-   - **Sudoku resuelto**: Cascada dorada completa por todo el tablero.
-
-7. **Efectos de Sonido Sintetizados (Web Audio API)**:
-   - Efectos sonoros fluidos y musicales generados en tiempo real por el navegador (sin latencia ni descargas externas).
-   - Tonos melódicos al colocar números, alertas suaves de error, arpegios al completar filas o recuadros, fanfarrias de victoria y botón de silenciador.
-
-8. **Controles Táctiles y de Teclado**:
-   - Soporte completo para móviles y escritorio.
-   - Teclado numérico físico (1-9), flechas de dirección (o WASD), retroceso (Backspace), modo notas (`N`), pedir pista (`H`), y deshacer (`Ctrl+Z`).
+Un juego de Sudoku interactivo, moderno y completo desarrollado con tecnologías web estándar (HTML5, CSS3, JavaScript ES6), Web Audio API y WebSockets (MQTT/WSS). Listo para desplegar en **Vercel** y **GitHub Pages**.
 
 ---
 
-## 🚀 Cómo Abrir y Jugar
+## 🌟 Nuevas Características: Login & Multijugador en Grupo
 
-Puedes abrir el juego de dos maneras muy sencillas:
+### 1. Sistema de Autenticación (Login & Registro)
+- **Pantalla de bienvenida con pestañas**:
+  - **Iniciar Sesión**: Ingresa con tu nombre de usuario y PIN/clave. Si juegas en la misma computadora, aparecen botones de acceso rápido a las cuentas guardadas.
+  - **Crear Cuenta**: Elige tu avatar (🦊, 🦁, 🐼, 🚀, 💎, 🐉, ⚡, 👑, 🦉, 🐱), escribe tu nombre de jugador y crea un PIN de acceso. ¡Recibes 4 ⭐ de bienvenida!
+  - **Cerrar Sesión / Cambiar Cuenta**: Botón 🚪 en la barra superior para alternar entre diferentes perfiles manteniendo las estrellas y estadísticas de cada uno.
 
-### Opción 1: Abrir directamente el archivo en tu navegador
-Haz doble clic en el archivo `index.html` o ábrelo en Google Chrome, Microsoft Edge, Mozilla Firefox o Safari.
+### 2. Modo Multijugador en Grupo (Salas por Código)
+- **Crear Sala**:
+  - El anfitrión hace clic en **"Crear Sala Nueva"**.
+  - Configura el **Nivel de Dificultad** (Principiante, Fácil, Medio, Difícil, Experto).
+  - Elige si competirán en **1 Partida Rápida** o **2 Partidas Consecutivas** (Gran Final).
+  - Se genera un **Código de Sala** único de 6 caracteres (ej. `SDK-482`) con botón para copiar al portapapeles.
+- **Unirse con Código**:
+  - Los demás jugadores (2 o más desde cualquier PC en el mundo) entran a **"Jugar en Grupo"**, colocan el código de sala y se conectan instantáneamente.
+- **Mismo Tablero para Todos (Generación por Semilla)**:
+  - Todos los participantes reciben exactamente el mismo Sudoku y pistas iniciales para garantizar una competencia 100% justa.
+- **Barra de Rivales en Vivo (HUD)**:
+  - En la parte superior de la pantalla se muestra el avance en tiempo real de cada rival: avatar, porcentaje de completado (%) y estado.
+- **Regla de Eliminación**:
+  - Si un jugador comete **4 fallas**, queda automáticamente **Eliminado 💀** de la ronda (en multijugador no se puede revivir con estrellas para mantener la emoción de la carrera).
+- **Podio y Rondas Consecutivas**:
+  - El primero en terminar se corona con el **1º Lugar 🥇**, seguido del **2º 🥈**, **3º 🥉**, etc.
+  - Si se seleccionaron **2 partidas consecutivas**, al terminar la primera se muestra la tabla intermedia y el anfitrión lanza la **Ronda 2**.
+  - Al concluir la Gran Final, se proclama al campeón definitivo con podio animado y bonificación de estrellas.
 
-### Opción 2: Usar un servidor local ligero
-Si deseas probarlo mediante un servidor local, puedes ejecutar en la terminal:
-```bash
-python -m http.server 8000
-```
-Y abrir en tu navegador: `http://localhost:8000`
+---
+
+## 🎮 Modo Solitario (Entrenamiento Individual)
+- 5 niveles progresivos con tablero algorítmico instantáneo.
+- Límite de 4 fallas con opción de **Revivir (-2 ⭐)** sin perder tu progreso.
+- **Bonificación de Velocidad**: Colocar todos los números de un dígito en menos de 1 minuto otorga +1 Pista/Ayuda gratis.
+- 5 fondos y temas visuales: *Galaxia Neón*, *Madera Zen*, *Bosque Esmeralda*, *Papel & Tinta*, *Cyberpunk*.
+- Efectos de luz al completar filas, columnas y recuadros 3x3.
+- Efectos sonoros generados en tiempo real con Web Audio API.
+
+---
+
+## 🚀 Cómo Desplegar y Probar
+
+### En Vercel:
+Dado que el proyecto utiliza WebSockets seguros (WSS) y es 100% estático (HTML/CSS/JS), puedes subirlo directamente a tu repositorio de GitHub y conectarlo a **Vercel**:
+1. Haz push de estos archivos a tu repositorio: `https://github.com/monicabarrientos23/SUDOKU.git`
+2. Vercel detectará automáticamente el archivo `index.html` y lo publicará en tu dominio `.vercel.app`.
+3. ¡Cualquier persona con el enlace podrá registrarse, crear una sala y compartir el código para jugar juntos en tiempo real!
+
+### En local:
+Haz doble clic en `index.html` en dos ventanas de navegador diferentes (o una normal y una en incógnito) para probar el multijugador y ver cómo se sincronizan las salas en vivo.

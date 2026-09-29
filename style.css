@@ -957,3 +957,542 @@ body {
     font-size: 1.25rem;
   }
 }
+
+/* ==========================================================================
+   NUEVOS ESTILOS: AUTENTICACIÓN, MULTIJUGADOR, HUD Y PODIO
+   ========================================================================== */
+
+/* Botón selector de Modo en barra superior */
+.mode-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 240, 255, 0.15);
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mode-toggle-btn:hover {
+  background: var(--accent-color);
+  color: #000000;
+  transform: scale(1.04);
+}
+
+.btn-danger {
+  color: #ff5277 !important;
+  border-color: rgba(255, 82, 119, 0.3) !important;
+}
+
+.btn-danger:hover {
+  background: #ff5277 !important;
+  color: #ffffff !important;
+}
+
+/* Pestañas de Autenticación (Login / Registro) */
+.auth-card {
+  max-width: 420px;
+}
+
+.auth-tabs {
+  display: flex;
+  width: 100%;
+  border-bottom: 2px solid var(--border-subtle);
+  margin-bottom: 18px;
+}
+
+.auth-tab-btn {
+  flex: 1;
+  padding: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative;
+  transition: color var(--transition-fast);
+}
+
+.auth-tab-btn.active {
+  color: var(--accent-color);
+}
+
+.auth-tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent-color);
+  border-radius: 3px 3px 0 0;
+  box-shadow: 0 0 10px var(--accent-color);
+}
+
+.auth-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 12px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.input-select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  color: #ffffff;
+  border: 1px solid var(--border-subtle);
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.auth-error-alert {
+  background: rgba(255, 60, 60, 0.2);
+  border: 1px solid #ff3c3c;
+  color: #ffb4b4;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  margin-bottom: 12px;
+  text-align: left;
+}
+
+/* Lista de cuentas rápidas guardadas */
+.quick-accounts-container {
+  text-align: left;
+  margin-bottom: 14px;
+}
+
+.quick-accounts-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.quick-account-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  padding: 4px 8px;
+  border-radius: 14px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.quick-account-pill:hover {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: var(--accent-color);
+}
+
+/* Selector de Modo (Tarjetas Solo vs Grupo) */
+.mode-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.mode-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.mode-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-color);
+}
+
+.mode-icon-large {
+  font-size: 2.4rem;
+  margin-bottom: 8px;
+}
+
+.mode-card h3 {
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+.mode-card p {
+  font-size: 0.78rem;
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+
+/* ==========================================================================
+   HUD MULTIJUGADOR EN VIVO (BARRA DE RIVALES EN PANTALLA)
+   ========================================================================== */
+.multiplayer-hud {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  margin-bottom: 4px;
+}
+
+.mp-hud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 4px;
+}
+
+.mp-live-badge {
+  color: #ff3366;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  animation: pulseLive 1.5s infinite;
+}
+
+@keyframes pulseLive {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.mp-round-text {
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+.mp-room-tag {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-family: monospace;
+}
+
+.opponents-track {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.opponent-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.opponent-card.is-me {
+  border: 1px solid var(--accent-color);
+  background: rgba(0, 240, 255, 0.08);
+}
+
+.opponent-avatar {
+  font-size: 1.1rem;
+}
+
+.opponent-name {
+  width: 75px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+  text-align: left;
+}
+
+.opponent-bar-wrapper {
+  flex-grow: 1;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.opponent-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-color), #00ffaa);
+  border-radius: 6px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 8px var(--accent-color);
+}
+
+.opponent-status-text {
+  font-size: 0.72rem;
+  min-width: 55px;
+  text-align: right;
+  font-weight: 700;
+}
+
+.status-eliminated {
+  color: #ff4757;
+}
+
+.status-finished {
+  color: #ffd700;
+}
+
+/* ==========================================================================
+   LOBBY MULTIJUGADOR (SALAS Y CÓDIGO)
+   ========================================================================== */
+.mp-lobby-card {
+  max-width: 460px;
+}
+
+.mp-action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.input-code {
+  text-align: center;
+  font-size: 1.4rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.btn-group-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.btn-group-row button {
+  flex: 1;
+}
+
+.room-code-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px dashed var(--accent-color);
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.room-code-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.room-code-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--accent-color);
+  letter-spacing: 2px;
+  font-family: monospace;
+}
+
+.icon-btn-small {
+  background: var(--button-bg);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.icon-btn-small:hover {
+  background: var(--accent-color);
+  color: #000;
+}
+
+.room-rules-summary {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.lobby-players-title {
+  text-align: left;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  color: var(--text-main);
+}
+
+.lobby-players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 10px;
+  max-height: 180px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+  padding: 4px;
+}
+
+.lobby-player-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 10px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.lobby-player-item.is-host {
+  border-color: #ffd700;
+}
+
+.host-crown {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 0.85rem;
+}
+
+.player-avatar-lobby {
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+
+.player-name-lobby {
+  font-size: 0.8rem;
+  font-weight: 600;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.host-controls {
+  margin-top: 10px;
+}
+
+.host-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.guest-waiting {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.loader-pulse {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  animation: pulseScale 1.2s infinite ease-in-out;
+}
+
+@keyframes pulseScale {
+  0% { transform: scale(0.6); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(0.6); opacity: 0.5; }
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+/* ==========================================================================
+   PODIO FINAL Y CLASIFICACIÓN MULTIJUGADOR
+   ========================================================================== */
+.podium-card {
+  max-width: 440px;
+}
+
+.podium-ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.podium-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+}
+
+.podium-row.rank-1 {
+  background: rgba(255, 215, 0, 0.15);
+  border-color: #ffd700;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.3);
+}
+
+.podium-row.rank-2 {
+  background: rgba(192, 192, 192, 0.15);
+  border-color: #c0c0c0;
+}
+
+.podium-row.rank-3 {
+  background: rgba(205, 127, 50, 0.15);
+  border-color: #cd7f32;
+}
+
+.podium-player-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.podium-rank-badge {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.podium-stats {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.podium-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+

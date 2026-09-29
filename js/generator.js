@@ -36,11 +36,29 @@ class SudokuGenerator {
     return true;
   }
 
-  // Mezcla un array aleatoriamente (Fisher-Yates)
+  // Generador de números pseudo-aleatorios determinista (Mulberry32)
+  createPRNG(seed) {
+    let s = typeof seed === 'number' ? seed : 0;
+    if (typeof seed === 'string') {
+      s = 0;
+      for (let i = 0; i < seed.length; i++) {
+        s = (Math.imul(31, s) + seed.charCodeAt(i)) | 0;
+      }
+    }
+    return function() {
+      s |= 0; s = (s + 0x6D2B79F5) | 0;
+      let t = Math.imul(s ^ (s >>> 15), 1 | s);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // Mezcla un array aleatoriamente (Fisher-Yates con soporte de PRNG por semilla)
   shuffle(array) {
     const arr = [...array];
+    const rand = this.rng || Math.random;
     for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
+      const j = Math.floor(rand() * (i + 1));
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
@@ -115,10 +133,14 @@ class SudokuGenerator {
     return countObj.count;
   }
 
-  // Genera un tablero completo y luego vacía celdas según la dificultad
-  generate(difficultyLevel = 1) {
+  // Genera un tablero completo y luego vacía celdas según la dificultad (soporta semilla para multijugador)
+  generate(difficultyLevel = 1, seed = null) {
     const config = this.DIFFICULTIES[difficultyLevel] || this.DIFFICULTIES[1];
     const targetClues = config.clues;
+
+    // Inicializar generador determinista si se proporciona semilla, o generar una nueva
+    const actualSeed = (seed !== null && seed !== undefined) ? seed : Math.floor(Math.random() * 1000000000);
+    this.rng = this.createPRNG(actualSeed);
 
     // 1. Crear matriz vacía 9x9
     const solution = Array.from({ length: 9 }, () => Array(9).fill(0));
@@ -171,13 +193,16 @@ class SudokuGenerator {
       cluesRemaining--;
     }
 
+    this.rng = null;
+
     return {
       puzzle,
       solution,
       difficulty: difficultyLevel,
       difficultyName: config.name,
       rewardStars: config.stars,
-      initialClues: cluesRemaining
+      initialClues: cluesRemaining,
+      seed: actualSeed
     };
   }
 }
