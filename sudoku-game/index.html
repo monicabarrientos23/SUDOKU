@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sudoku Master - Juego Web Interactivo</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="theme-galaxy">
+
+  <div class="game-container">
+    <!-- BARRA SUPERIOR: PERFIL, ESTRELLAS, SONIDO Y TEMA -->
+    <header class="top-bar">
+      <div class="user-profile-badge" id="btn-profile" title="Ver perfil y estadísticas">
+        <span class="avatar-icon" id="user-avatar">🦊</span>
+        <span class="user-name" id="user-name">Jugador</span>
+        <span class="stars-badge">
+          ⭐ <span id="user-stars">0</span>
+        </span>
+      </div>
+
+      <div class="header-controls">
+        <select id="theme-select" class="theme-dropdown" title="Cambiar tema de fondo">
+          <option value="theme-galaxy">🌌 Galaxia Neón</option>
+          <option value="theme-wood">🪵 Madera Clásica</option>
+          <option value="theme-emerald">🌿 Bosque Esmeralda</option>
+          <option value="theme-paper">☀️ Papel & Tinta</option>
+          <option value="theme-cyberpunk">🌆 Cyberpunk</option>
+        </select>
+
+        <button id="btn-sound" class="icon-btn" title="Silenciar / Activar sonido">
+          <span>🔊</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- BARRA DE ESTADO DE LA PARTIDA: DIFICULTAD, TIEMPO, FALLAS -->
+    <div class="game-status-bar">
+      <div class="difficulty-wrapper">
+        <select id="difficulty-select" title="Seleccionar dificultad">
+          <option value="1">Nivel 1: Principiante (⭐ 1)</option>
+          <option value="2">Nivel 2: Fácil (⭐ 2)</option>
+          <option value="3">Nivel 3: Medio (⭐ 3)</option>
+          <option value="4">Nivel 4: Difícil (⭐ 4)</option>
+          <option value="5">Nivel 5: Experto (⭐ 5)</option>
+        </select>
+      </div>
+
+      <div class="timer-box" title="Tiempo transcurrido">
+        <span>⏱️</span>
+        <span id="game-timer">00:00</span>
+      </div>
+
+      <div class="mistakes-box" title="Límite: 4 fallas">
+        <span>Fallas:</span>
+        <span id="mistakes-display">0 / 4</span>
+        <div class="mistakes-icons" id="mistakes-icons">
+          <span class="heart-alive">❤️</span>
+          <span class="heart-alive">❤️</span>
+          <span class="heart-alive">❤️</span>
+          <span class="heart-alive">❤️</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLERO DE SUDOKU 9x9 -->
+    <main class="sudoku-board-wrapper">
+      <div id="sudoku-board" class="sudoku-grid">
+        <!-- Las 81 celdas se generan dinámicamente con JS -->
+      </div>
+    </main>
+
+    <!-- BARRA DE ACCIONES (NOTAS, BORRAR, PISTA, DESHACER, NUEVO JUEGO) -->
+    <section class="action-bar">
+      <button id="btn-action-undo" class="action-btn" title="Deshacer última jugada (Ctrl+Z)">
+        <span class="btn-icon">↩️</span>
+        <span>Deshacer</span>
+      </button>
+
+      <button id="btn-action-erase" class="action-btn" title="Borrar casilla o notas (Backspace)">
+        <span class="btn-icon">🧹</span>
+        <span>Borrar</span>
+      </button>
+
+      <button id="btn-mode-notes" class="action-btn" title="Modo notas / lápiz (Tecla N)">
+        <span class="btn-icon">✏️</span>
+        <span>Notas</span>
+      </button>
+
+      <button id="btn-action-hint" class="action-btn" title="Pedir ayuda/pista (Tecla H)">
+        <span class="btn-icon">💡</span>
+        <span>Pista</span>
+        <span class="badge-hint" id="hints-count">3</span>
+      </button>
+
+      <button id="btn-new-game" class="action-btn" title="Iniciar un nuevo tablero">
+        <span class="btn-icon">🔄</span>
+        <span>Nuevo</span>
+      </button>
+    </section>
+
+    <!-- TECLADO NUMÉRICO (1 AL 9) -->
+    <section class="keypad" id="keypad">
+      <button class="keypad-btn" data-num="1">1<span class="badge">9</span></button>
+      <button class="keypad-btn" data-num="2">2<span class="badge">9</span></button>
+      <button class="keypad-btn" data-num="3">3<span class="badge">9</span></button>
+      <button class="keypad-btn" data-num="4">4<span class="badge">9</span></button>
+      <button class="keypad-btn" data-num="5">5<span class="badge">9</span></button>
+      <button class="keypad-btn" data-num="6">6<span class="badge">9</span></button>
+      <button class="keypad-btn" data-num="7">7<span class="badge">9</span></button>
+      <button class="keypad-btn" data-num="8">8<span class="badge">9</span></button>
+      <button class="keypad-btn" data-num="9">9<span class="badge">9</span></button>
+    </section>
+  </div>
+
+  <!-- TOAST DE NOTIFICACIONES (BONIFICACIONES DE VELOCIDAD, ETC.) -->
+  <div id="toast-notification" class="toast">
+    <h4 id="toast-title">Aviso</h4>
+    <p id="toast-desc">Mensaje del juego</p>
+  </div>
+
+  <!-- MODAL: REGISTRO DE USUARIO -->
+  <div id="modal-register" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h2>✨ Registro de Jugador</h2>
+      <p>Elige tu avatar y un nombre para guardar tus estrellas, récords y estadísticas.</p>
+      
+      <form id="form-register">
+        <div class="avatar-selection-grid">
+          <button type="button" class="avatar-choice selected" data-avatar="🦊">🦊</button>
+          <button type="button" class="avatar-choice" data-avatar="🦁">🦁</button>
+          <button type="button" class="avatar-choice" data-avatar="🐼">🐼</button>
+          <button type="button" class="avatar-choice" data-avatar="🚀">🚀</button>
+          <button type="button" class="avatar-choice" data-avatar="💎">💎</button>
+          <button type="button" class="avatar-choice" data-avatar="🐉">🐉</button>
+          <button type="button" class="avatar-choice" data-avatar="⚡">⚡</button>
+          <button type="button" class="avatar-choice" data-avatar="👑">👑</button>
+          <button type="button" class="avatar-choice" data-avatar="🦉">🦉</button>
+          <button type="button" class="avatar-choice" data-avatar="🐱">🐱</button>
+        </div>
+
+        <input
+          type="text"
+          id="input-player-name"
+          class="input-text"
+          placeholder="Tu Nombre o Apodo"
+          maxlength="15"
+          required
+        />
+
+        <button type="submit" class="btn-primary">¡Comenzar a Jugar!</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: GAME OVER / REVIVIR CON ESTRELLAS -->
+  <div id="modal-gameover" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h2>💀 ¡4 Fallas Cometidas!</h2>
+      <p>Has alcanzado el límite de errores permitidos. ¿Quieres continuar tu partida sin perder tu progreso o prefieres reiniciar?</p>
+      
+      <button id="btn-revive" class="btn-primary btn-revive-glow">
+        ✨ Continuar con Estrellas (-2 ⭐)
+      </button>
+      <div id="revive-cost-text" style="font-size:0.8rem; margin-bottom:14px; color:var(--accent-color);"></div>
+
+      <button id="btn-restart-game" class="btn-secondary">
+        🔄 Reiniciar desde el Inicio
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: VICTORIA -->
+  <div id="modal-victory" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h2>🏆 ¡Partida Completada!</h2>
+      <p>¡Has resuelto el tablero de Sudoku con maestría!</p>
+
+      <div class="stats-summary">
+        <div class="stat-card">
+          <span class="stat-val" id="victory-stars-earned">⭐</span>
+          <span class="stat-lbl">Estrellas Ganadas</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val" id="victory-time">00:00</span>
+          <span class="stat-lbl">Tiempo</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val" id="victory-mistakes">0 / 4</span>
+          <span class="stat-lbl">Fallas</span>
+        </div>
+      </div>
+
+      <button id="btn-next-level" class="btn-primary">
+        Siguiente Nivel ➔
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: PERFIL Y ESTADÍSTICAS -->
+  <div id="modal-stats" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h2>📊 Perfil del Jugador</h2>
+      <div id="stats-modal-body">
+        <!-- Rellenado dinámicamente con JS -->
+      </div>
+      <button id="btn-close-stats" class="btn-secondary">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/audio.js"></script>
+  <script src="js/generator.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
