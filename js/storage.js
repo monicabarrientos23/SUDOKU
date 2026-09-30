@@ -10,38 +10,25 @@ class StorageManager {
     this.SESSION_KEY = 'sudoku_active_session';
     this.THEME_KEY = 'sudoku_active_theme';
 
-    this.migrateLegacyUser();
+    // Limpieza solicitada por el usuario: eliminar todos los usuarios previos con contraseñas olvidadas
+    this.checkAndWipeAccounts();
   }
 
-  // Migra usuarios del sistema anterior de forma transparente
-  migrateLegacyUser() {
-    try {
-      const legacyRaw = localStorage.getItem('sudoku_active_user');
-      const accounts = this.getAllAccountsMap();
-
-      if (legacyRaw && Object.keys(accounts).length === 0) {
-        const legacy = JSON.parse(legacyRaw);
-        if (legacy && legacy.name) {
-          const key = legacy.name.trim().toLowerCase();
-          accounts[key] = {
-            username: legacy.name.trim(),
-            pin: '1234',
-            avatar: legacy.avatar || '🦊',
-            stars: legacy.stars || 4,
-            gamesPlayed: legacy.gamesPlayed || 0,
-            gamesWon: legacy.gamesWon || 0,
-            multiplayerPlayed: 0,
-            multiplayerWins: 0,
-            bestTimes: legacy.bestTimes || { 1: null, 2: null, 3: null, 4: null, 5: null },
-            createdAt: legacy.createdAt || Date.now()
-          };
-          localStorage.setItem(this.ACCOUNTS_KEY, JSON.stringify(accounts));
-          localStorage.setItem(this.SESSION_KEY, key);
-        }
-      }
-    } catch (e) {
-      console.warn('Error en migración de usuario legado', e);
+  // Comprueba si se debe hacer la limpieza inicial de cuentas
+  checkAndWipeAccounts() {
+    const WIPE_KEY = 'sudoku_accounts_wiped_v4';
+    if (!localStorage.getItem(WIPE_KEY)) {
+      this.resetAllAccounts();
+      localStorage.setItem(WIPE_KEY, 'true');
     }
+  }
+
+  // Elimina absolutamente todas las cuentas, sesiones y datos de usuario guardados
+  resetAllAccounts() {
+    localStorage.removeItem(this.ACCOUNTS_KEY);
+    localStorage.removeItem(this.SESSION_KEY);
+    localStorage.removeItem('sudoku_active_user');
+    return true;
   }
 
   getAllAccountsMap() {
@@ -80,16 +67,20 @@ class StorageManager {
     localStorage.setItem(this.ACCOUNTS_KEY, JSON.stringify(accounts));
   }
 
-  // Registrar nueva cuenta con Nombre, PIN y Avatar
-  register(username, pin, avatar = '🦊') {
+  // Registrar nueva cuenta con Nombre, Contraseña, Confirmación de Contraseña y Avatar
+  register(username, pin, confirmPin, avatar = '🦊') {
     const cleanName = (username || '').trim();
     const cleanPin = (pin || '').trim();
+    const cleanConfirm = (confirmPin || '').trim();
 
     if (!cleanName || cleanName.length < 2) {
       return { success: false, message: 'El nombre debe tener al menos 2 caracteres.' };
     }
     if (!cleanPin || cleanPin.length < 3) {
-      return { success: false, message: 'El PIN/clave debe tener al menos 3 dígitos o caracteres.' };
+      return { success: false, message: 'La contraseña debe tener al menos 3 caracteres.' };
+    }
+    if (cleanPin !== cleanConfirm) {
+      return { success: false, message: 'Las contraseñas no coinciden. Por favor confirma que sean exactamente iguales.' };
     }
 
     const key = cleanName.toLowerCase();
@@ -119,7 +110,7 @@ class StorageManager {
     return { success: true, user: newProfile };
   }
 
-  // Iniciar sesión con Nombre y PIN
+  // Iniciar sesión con Nombre y Contraseña
   login(username, pin) {
     const cleanName = (username || '').trim();
     const cleanPin = (pin || '').trim();
@@ -127,17 +118,20 @@ class StorageManager {
     if (!cleanName) {
       return { success: false, message: 'Ingresa tu nombre de usuario.' };
     }
+    if (!cleanPin) {
+      return { success: false, message: 'Ingresa tu contraseña.' };
+    }
 
     const key = cleanName.toLowerCase();
     const accounts = this.getAllAccountsMap();
     const user = accounts[key];
 
     if (!user) {
-      return { success: false, message: 'Usuario no encontrado. Si no tienes cuenta, crea una en la pestaña Registro.' };
+      return { success: false, message: 'Usuario no encontrado. Si eres nuevo, haz clic en Crear Cuenta.' };
     }
 
     if (user.pin && user.pin !== cleanPin) {
-      return { success: false, message: 'PIN o contraseña incorrecta.' };
+      return { success: false, message: 'Contraseña incorrecta. Si la olvidaste, puedes restablecer las cuentas abajo.' };
     }
 
     localStorage.setItem(this.SESSION_KEY, key);

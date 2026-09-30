@@ -9,7 +9,7 @@ Un juego de Sudoku interactivo, moderno y completo desarrollado con tecnologías
 ### 1. Sistema de Autenticación (Login & Registro)
 - **Pantalla de bienvenida con pestañas**:
   - **Iniciar Sesión**: Ingresa con tu nombre de usuario y PIN/clave. Si juegas en la misma computadora, aparecen botones de acceso rápido a las cuentas guardadas.
-  - **Crear Cuenta**: Elige tu avatar (🦊, 🦁, 🐼, 🚀, 💎, 🐉, ⚡, 👑, 🦉, 🐱), escribe tu nombre de jugador y crea un PIN de acceso. ¡Recibes 4 ⭐ de bienvenida!
+  - **Crear Cuenta**: Elige tu avatar de animalito (🦊, 🦁, 🐼, 🐯, 🐨, 🐵, 🐰, 🐶, 🦉, 🐱), escribe tu nombre de jugador y crea un PIN de acceso. ¡Recibes 4 ⭐ de bienvenida!
   - **Cerrar Sesión / Cambiar Cuenta**: Botón 🚪 en la barra superior para alternar entre diferentes perfiles manteniendo las estrellas y estadísticas de cada uno.
 
 ### 2. Modo Multijugador en Grupo (Salas por Código)

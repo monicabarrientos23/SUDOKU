@@ -101,10 +101,14 @@ class SudokuApp {
     this.domLoginErrorMsg = document.getElementById('login-error-msg');
     this.domRegisterUsername = document.getElementById('register-username');
     this.domRegisterPin = document.getElementById('register-pin');
+    this.domRegisterPinConfirm = document.getElementById('register-pin-confirm');
     this.domRegisterErrorMsg = document.getElementById('register-error-msg');
     this.domAvatarOptions = document.querySelectorAll('.avatar-choice');
     this.domQuickAccountsSection = document.getElementById('quick-accounts-section');
     this.domSavedAccountsList = document.getElementById('saved-accounts-list');
+    this.domBtnForgotResetAccounts = document.getElementById('btn-forgot-reset-accounts');
+    this.domLinkToRegister = document.getElementById('link-to-register');
+    this.domLinkToLogin = document.getElementById('link-to-login');
 
     // Modal Selector de Modo
     this.domModalModeSelect = document.getElementById('modal-mode-select');
@@ -202,8 +206,12 @@ class SudokuApp {
   // ==========================================================================
   showAuthModal() {
     this.domModalAuth.classList.remove('hidden');
-    this.showLoginTab();
-    this.renderQuickAccounts();
+    const accounts = this.storage.getAllAccountsList();
+    if (accounts.length === 0) {
+      this.showRegisterTab();
+    } else {
+      this.showLoginTab();
+    }
   }
 
   showLoginTab() {
@@ -303,6 +311,56 @@ class SudokuApp {
     this.domTabLogin.addEventListener('click', () => this.showLoginTab());
     this.domTabRegister.addEventListener('click', () => this.showRegisterTab());
 
+    // Enlaces de navegación rápida entre Iniciar Sesión y Crear Cuenta
+    if (this.domLinkToRegister) {
+      this.domLinkToRegister.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.showRegisterTab();
+      });
+    }
+
+    if (this.domLinkToLogin) {
+      this.domLinkToLogin.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.showLoginTab();
+      });
+    }
+
+    // Botones para mostrar / ocultar contraseña (ojo 👁️)
+    document.querySelectorAll('.btn-toggle-pw').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.dataset.target;
+        const input = document.getElementById(targetId);
+        if (input) {
+          if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = '🙈';
+          } else {
+            input.type = 'password';
+            btn.textContent = '👁️';
+          }
+        }
+      });
+    });
+
+    // Botón para borrar todas las cuentas si olvidó la contraseña
+    if (this.domBtnForgotResetAccounts) {
+      this.domBtnForgotResetAccounts.addEventListener('click', () => {
+        const confirmed = confirm('¿Olvidaste tu contraseña? Esta opción eliminará todas las cuentas guardadas para que puedas registrar una nueva desde cero sin problemas. ¿Deseas borrar las cuentas?');
+        if (confirmed) {
+          this.storage.resetAllAccounts();
+          this.domLoginUsername.value = '';
+          this.domLoginPin.value = '';
+          this.domRegisterUsername.value = '';
+          this.domRegisterPin.value = '';
+          if (this.domRegisterPinConfirm) this.domRegisterPinConfirm.value = '';
+          this.renderQuickAccounts();
+          this.showToast('🗑️ Cuentas Eliminadas', 'Se han borrado todas las cuentas guardadas. Ya puedes crear tu nueva cuenta.');
+          this.showRegisterTab();
+        }
+      });
+    }
+
     // Selección de Avatar en Registro
     let selectedAvatar = '🦊';
     this.domAvatarOptions.forEach(btn => {
@@ -336,8 +394,9 @@ class SudokuApp {
       e.preventDefault();
       const user = this.domRegisterUsername.value.trim();
       const pin = this.domRegisterPin.value.trim();
+      const confirmPin = this.domRegisterPinConfirm ? this.domRegisterPinConfirm.value.trim() : pin;
 
-      const res = this.storage.register(user, pin, selectedAvatar);
+      const res = this.storage.register(user, pin, confirmPin, selectedAvatar);
       if (res.success) {
         this.domModalAuth.classList.add('hidden');
         this.loadUserProfile();

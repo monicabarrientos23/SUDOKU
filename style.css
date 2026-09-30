@@ -1035,10 +1035,93 @@ body {
   box-shadow: 0 0 10px var(--accent-color);
 }
 
+.auth-panel-heading {
+  font-size: 1.15rem;
+  color: var(--accent-color);
+  margin-bottom: 4px;
+}
+
 .auth-desc {
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-bottom: 14px;
+}
+
+.welcome-gift-badge {
+  background: rgba(255, 215, 0, 0.12);
+  border: 1px dashed #ffd700;
+  color: #ffd700;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.password-wrapper input {
+  padding-right: 40px !important;
+  margin-bottom: 0 !important;
+}
+
+.btn-toggle-pw {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.05rem;
+  padding: 4px;
+  opacity: 0.7;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.btn-toggle-pw:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.auth-footer-actions {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.btn-link-danger {
+  background: transparent;
+  border: none;
+  color: #ff6b81;
+  font-size: 0.76rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 4px;
+  transition: color var(--transition-fast);
+}
+
+.btn-link-danger:hover {
+  color: #ff3838;
+}
+
+.auth-switch-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 12px;
+  text-align: center;
+}
+
+.auth-switch-text a {
+  color: var(--accent-color);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.auth-switch-text a:hover {
+  text-decoration: underline;
 }
 
 .form-group {
