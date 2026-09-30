@@ -144,105 +144,110 @@
        MODAL 1: AUTENTICACIÓN (LOGIN & REGISTRO CON PESTAÑAS)
        ========================================================================== -->
   <div id="modal-auth" class="modal-overlay hidden">
-    <div class="modal-card auth-card">
-      <div class="auth-tabs">
-        <button type="button" id="tab-login" class="auth-tab-btn active">🔑 Iniciar Sesión</button>
-        <button type="button" id="tab-register" class="auth-tab-btn">✨ Crear Cuenta</button>
+    <div class="modal-card auth-card-two-columns">
+      <div class="auth-header-unified">
+        <h2>🧩 Bienvenido a Sudoku Master</h2>
+        <p>Elige una opción: crea tu cuenta nueva a la izquierda o inicia sesión a la derecha.</p>
       </div>
 
-      <!-- PESTAÑA A: INICIAR SESIÓN -->
-      <form id="form-login" class="auth-form-panel">
-        <h3 class="auth-panel-heading">Bienvenido de nuevo</h3>
-        <p class="auth-desc">Ingresa tu usuario y contraseña para acceder a tus partidas y estrellas.</p>
-
-        <!-- Selector rápido de cuentas guardadas en esta máquina -->
-        <div id="quick-accounts-section" class="quick-accounts-container hidden">
-          <label class="form-label">Selecciona tu cuenta guardada:</label>
-          <div id="saved-accounts-list" class="quick-accounts-list"></div>
-        </div>
-
-        <div class="form-group">
-          <label for="login-username" class="form-label">Nombre de Usuario:</label>
-          <input type="text" id="login-username" class="input-text" placeholder="Ej: Monica" autocomplete="username" required />
-        </div>
-
-        <div class="form-group">
-          <label for="login-pin" class="form-label">Contraseña / PIN:</label>
-          <div class="password-wrapper">
-            <input type="password" id="login-pin" class="input-text" placeholder="Ingresa tu contraseña" autocomplete="current-password" required />
-            <button type="button" class="btn-toggle-pw" data-target="login-pin" title="Mostrar/Ocultar contraseña">👁️</button>
+      <div class="auth-columns-wrapper">
+        <!-- COLUMNA 1: CREAR CUENTA NUEVA -->
+        <div class="auth-column column-register">
+          <div class="column-header">
+            <h3>✨ Crear Cuenta</h3>
+            <span class="welcome-gift-pill">🎁 +4 ⭐ Gratis</span>
           </div>
+          <p class="auth-column-hint">Si eres nuevo, elige tu animalito y crea tu cuenta:</p>
+
+          <form id="form-register" class="auth-form-column">
+            <div class="form-group">
+              <label class="form-label">1. Elige tu Avatar:</label>
+              <div class="avatar-selection-grid compact-grid">
+                <button type="button" class="avatar-choice selected" data-avatar="🦊" title="Zorro">🦊</button>
+                <button type="button" class="avatar-choice" data-avatar="🦁" title="León">🦁</button>
+                <button type="button" class="avatar-choice" data-avatar="🐼" title="Panda">🐼</button>
+                <button type="button" class="avatar-choice" data-avatar="🐯" title="Tigre">🐯</button>
+                <button type="button" class="avatar-choice" data-avatar="🐨" title="Koala">🐨</button>
+                <button type="button" class="avatar-choice" data-avatar="🐵" title="Monito">🐵</button>
+                <button type="button" class="avatar-choice" data-avatar="🐰" title="Conejo">🐰</button>
+                <button type="button" class="avatar-choice" data-avatar="🐶" title="Perrito">🐶</button>
+                <button type="button" class="avatar-choice" data-avatar="🦉" title="Búho">🦉</button>
+                <button type="button" class="avatar-choice" data-avatar="🐱" title="Gatito">🐱</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="register-username" class="form-label">2. Nombre o Apodo:</label>
+              <input type="text" id="register-username" class="input-text" placeholder="Ej: Monica23 (máx. 15)" maxlength="15" autocomplete="username" required />
+            </div>
+
+            <div class="form-group">
+              <label for="register-pin" class="form-label">3. Contraseña:</label>
+              <div class="password-wrapper">
+                <input type="password" id="register-pin" class="input-text" placeholder="Mínimo 3 caracteres" autocomplete="new-password" required />
+                <button type="button" class="btn-toggle-pw" data-target="register-pin" title="Mostrar/Ocultar">👁️</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="register-pin-confirm" class="form-label">4. Confirmar Contraseña:</label>
+              <div class="password-wrapper">
+                <input type="password" id="register-pin-confirm" class="input-text" placeholder="Repite tu contraseña" autocomplete="new-password" required />
+                <button type="button" class="btn-toggle-pw" data-target="register-pin-confirm" title="Mostrar/Ocultar">👁️</button>
+              </div>
+            </div>
+
+            <div id="register-error-msg" class="auth-error-alert hidden"></div>
+
+            <button type="submit" class="btn-primary btn-revive-glow">Crear Cuenta y Recibir 4 ⭐</button>
+          </form>
         </div>
 
-        <div id="login-error-msg" class="auth-error-alert hidden"></div>
-
-        <button type="submit" class="btn-primary">Entrar a Jugar</button>
-
-        <div class="auth-footer-actions">
-          <button type="button" id="btn-forgot-reset-accounts" class="btn-link-danger">
-            🗑️ ¿Olvidaste tu contraseña? Restablecer y borrar cuentas
-          </button>
+        <!-- DIVISOR VERTICAL -->
+        <div class="auth-column-divider">
+          <span class="divider-badge">O</span>
         </div>
 
-        <p class="auth-switch-text">
-          ¿No tienes una cuenta aún? <a href="#" id="link-to-register">Crear cuenta nueva</a>
-        </p>
-      </form>
-
-      <!-- PESTAÑA B: CREAR CUENTA NUEVA -->
-      <form id="form-register" class="auth-form-panel hidden">
-        <h3 class="auth-panel-heading">Registro de Nuevo Jugador</h3>
-        <p class="auth-desc">Elige tu personaje y crea tu cuenta para jugar solo o con amigos.</p>
-
-        <div class="welcome-gift-badge">
-          🎁 <strong>Bono de Bienvenida:</strong> ¡Recibes <strong>4 ⭐ Estrellas</strong> gratis al registrarte!
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">1. Elige tu Avatar:</label>
-          <div class="avatar-selection-grid">
-            <button type="button" class="avatar-choice selected" data-avatar="🦊" title="Zorro">🦊</button>
-            <button type="button" class="avatar-choice" data-avatar="🦁" title="León">🦁</button>
-            <button type="button" class="avatar-choice" data-avatar="🐼" title="Panda">🐼</button>
-            <button type="button" class="avatar-choice" data-avatar="🐯" title="Tigre">🐯</button>
-            <button type="button" class="avatar-choice" data-avatar="🐨" title="Koala">🐨</button>
-            <button type="button" class="avatar-choice" data-avatar="🐵" title="Monito">🐵</button>
-            <button type="button" class="avatar-choice" data-avatar="🐰" title="Conejo">🐰</button>
-            <button type="button" class="avatar-choice" data-avatar="🐶" title="Perrito">🐶</button>
-            <button type="button" class="avatar-choice" data-avatar="🦉" title="Búho">🦉</button>
-            <button type="button" class="avatar-choice" data-avatar="🐱" title="Gatito">🐱</button>
+        <!-- COLUMNA 2: INICIAR SESIÓN -->
+        <div class="auth-column column-login">
+          <div class="column-header">
+            <h3>🔑 Iniciar Sesión</h3>
+            <span class="column-tag">¿Ya tienes cuenta?</span>
           </div>
+          <p class="auth-column-hint">Ingresa tus datos registrados para entrar a tu perfil:</p>
+
+          <form id="form-login" class="auth-form-column">
+            <!-- Selector rápido de cuentas guardadas en esta máquina -->
+            <div id="quick-accounts-section" class="quick-accounts-container hidden">
+              <label class="form-label">Tus cuentas en este equipo:</label>
+              <div id="saved-accounts-list" class="quick-accounts-list"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="login-username" class="form-label">Nombre de Usuario:</label>
+              <input type="text" id="login-username" class="input-text" placeholder="Tu usuario" autocomplete="username" required />
+            </div>
+
+            <div class="form-group">
+              <label for="login-pin" class="form-label">Contraseña / PIN:</label>
+              <div class="password-wrapper">
+                <input type="password" id="login-pin" class="input-text" placeholder="Tu contraseña" autocomplete="current-password" required />
+                <button type="button" class="btn-toggle-pw" data-target="login-pin" title="Mostrar/Ocultar">👁️</button>
+              </div>
+            </div>
+
+            <div id="login-error-msg" class="auth-error-alert hidden"></div>
+
+            <button type="submit" class="btn-primary">Entrar a mi Cuenta</button>
+
+            <div class="auth-footer-actions">
+              <button type="button" id="btn-forgot-reset-accounts" class="btn-link-danger">
+                🗑️ ¿Olvidaste tu contraseña? Borrar cuentas guardadas
+              </button>
+            </div>
+          </form>
         </div>
-
-        <div class="form-group">
-          <label for="register-username" class="form-label">2. Nombre de Usuario o Apodo:</label>
-          <input type="text" id="register-username" class="input-text" placeholder="Ej: Monica23 (máx. 15 caracteres)" maxlength="15" autocomplete="username" required />
-        </div>
-
-        <div class="form-group">
-          <label for="register-pin" class="form-label">3. Contraseña o PIN:</label>
-          <div class="password-wrapper">
-            <input type="password" id="register-pin" class="input-text" placeholder="Crea tu contraseña (mínimo 3 caracteres)" autocomplete="new-password" required />
-            <button type="button" class="btn-toggle-pw" data-target="register-pin" title="Mostrar/Ocultar contraseña">👁️</button>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="register-pin-confirm" class="form-label">4. Confirmar Contraseña:</label>
-          <div class="password-wrapper">
-            <input type="password" id="register-pin-confirm" class="input-text" placeholder="Repite la contraseña para confirmar" autocomplete="new-password" required />
-            <button type="button" class="btn-toggle-pw" data-target="register-pin-confirm" title="Mostrar/Ocultar contraseña">👁️</button>
-          </div>
-        </div>
-
-        <div id="register-error-msg" class="auth-error-alert hidden"></div>
-
-        <button type="submit" class="btn-primary btn-revive-glow">Crear Cuenta y Recibir 4 ⭐</button>
-
-        <p class="auth-switch-text">
-          ¿Ya tienes una cuenta creada? <a href="#" id="link-to-login">Iniciar sesión aquí</a>
-        </p>
-      </form>
+      </div>
     </div>
   </div>
 

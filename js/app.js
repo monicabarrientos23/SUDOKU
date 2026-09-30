@@ -202,33 +202,21 @@ class SudokuApp {
   }
 
   // ==========================================================================
-  // AUTENTICACIÓN (LOGIN & REGISTRO)
+  // AUTENTICACIÓN (LOGIN & REGISTRO EN DOS COLUMNAS)
   // ==========================================================================
   showAuthModal() {
     this.domModalAuth.classList.remove('hidden');
-    const accounts = this.storage.getAllAccountsList();
-    if (accounts.length === 0) {
-      this.showRegisterTab();
-    } else {
-      this.showLoginTab();
-    }
-  }
-
-  showLoginTab() {
-    this.domTabLogin.classList.add('active');
-    this.domTabRegister.classList.remove('active');
-    this.domFormLogin.classList.remove('hidden');
-    this.domFormRegister.classList.add('hidden');
-    this.domLoginErrorMsg.classList.add('hidden');
+    if (this.domLoginErrorMsg) this.domLoginErrorMsg.classList.add('hidden');
+    if (this.domRegisterErrorMsg) this.domRegisterErrorMsg.classList.add('hidden');
     this.renderQuickAccounts();
   }
 
+  showLoginTab() {
+    if (this.domLoginUsername) this.domLoginUsername.focus();
+  }
+
   showRegisterTab() {
-    this.domTabRegister.classList.add('active');
-    this.domTabLogin.classList.remove('active');
-    this.domFormRegister.classList.remove('hidden');
-    this.domFormLogin.classList.add('hidden');
-    this.domRegisterErrorMsg.classList.add('hidden');
+    if (this.domRegisterUsername) this.domRegisterUsername.focus();
   }
 
   renderQuickAccounts() {
@@ -307,9 +295,8 @@ class SudokuApp {
   }
 
   bindEvents() {
-    // Pestañas de Autenticación
-    this.domTabLogin.addEventListener('click', () => this.showLoginTab());
-    this.domTabRegister.addEventListener('click', () => this.showRegisterTab());
+    if (this.domTabLogin) this.domTabLogin.addEventListener('click', () => this.showLoginTab());
+    if (this.domTabRegister) this.domTabRegister.addEventListener('click', () => this.showRegisterTab());
 
     // Enlaces de navegación rápida entre Iniciar Sesión y Crear Cuenta
     if (this.domLinkToRegister) {
